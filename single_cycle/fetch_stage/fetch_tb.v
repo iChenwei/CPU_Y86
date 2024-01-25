@@ -14,7 +14,7 @@ wire [63:0]     valP_o;
 wire            instr_valid_o;
 wire            imem_error_o;
 
-fetch fetch(
+fetch fetch_module(
     .PC_i(PC_i),
     .icode_o(icode_o),
     .ifunc_o(ifunc_o),
