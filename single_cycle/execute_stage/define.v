@@ -23,4 +23,16 @@
 `define    ALUSUB       4'H1
 `define    ALUAND       4'H2
 `define    ALUXOR       4'H3
+// jmp
+`define    C_YES        4'H0
+`define    C_LE         4'H1
+`define    C_L          4'H2
+`define    C_E          4'H3
+`define    C_NE         4'H4
+`define    C_GE         4'H5
+`define    C_G          4'H6
+
+`define    zf           cc[2]
+`define    sf           cc[1]
+`define    of           cc[0]
 

@@ -102,8 +102,8 @@ reg [2:0] new_cc;
 always @(*) begin
     if(~rst_n_i) begin
         new_cc[2] = 1;  // zf = 1;
-        new_cc[1] = 0;
-        new_cc[0] = 0;
+        new_cc[1] = 0;  // sf
+        new_cc[0] = 0;  // of
     end
     else if (alu_fun == `FADDL) begin
         new_cc[2] = (valE_o == 0) ? 1 : 0;  // zf  零标志位
@@ -119,6 +119,7 @@ end
 
 assign set_cc = (icode_i == `IOPQ) ? 1 : 0;
 
+reg [3:0] cc;
 always @(posedge clk_i) begin
     if(~rst_n_i) 
         cc <= 3'b100;    // zf sf of
@@ -126,7 +127,7 @@ always @(posedge clk_i) begin
         cc <= new_cc;
 end
 
-assign Cnd_o = 
+assign Con_o = 
     (ifunc_i == `C_YES) |
     (ifunc_i == `C_LE & ((sf ^ of) | zf)) |         // <= 
     (ifunc_i == `C_L  & (sf ^ of)) |                // <
@@ -134,5 +135,14 @@ assign Cnd_o =
     (ifunc_i == `C_NE & ~zf) |                      // !=
     (ifunc_i == `C_GE & ~(sf ^ of)) |               // >=
     (ifunc_i == `C_G  & (~(sf ^ of) & ~zf));        // >
+
 endmodule
+
+/*
+test bench：
+
+// 实现0-1跳变：
+initial  clk_i = 0;
+always #5 clk_i = ~clk_i;
+*/
 
