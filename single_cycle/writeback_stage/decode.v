@@ -5,13 +5,18 @@ module decode (
     input wire  [63: 0]  rA_i,
     input wire  [63: 0]  rB_i,
 
+    // wb_stage
+    input wire           clk_i;
+    input wire  [63: 0]  valM_i;
+    input wire  [63: 0]  valE_i;
+
+    // out
     output wire [63: 0]  valA_o,
     output wire [63: 0]  valB_o
 );
 
-// 读 寄存器文件
 // icode 决定 srcA 和 srcB
-reg [3:0] srcA, srcB;   // 寄存器编号
+reg [3:0] srcA, srcB;
 always @(*) 
 begin 
     case (icode_i) 
@@ -66,12 +71,12 @@ begin
         `ICALL : 
         begin
             srcA = 4'hF;
-            srcB = 4'h4;    // %rsp => 编号为 4
+            srcB = 4'h4;    // rsp = 4
         end
 
         `IRET :
         begin
-            srcA = 4'h4;  // %rsp
+            srcA = 4'h4;
             srcB = 4'h4;
         end
 
@@ -100,6 +105,12 @@ reg [63:0] regfile[14:0];
 
 assign valA_o = (srcA == 4'hF) ? 64'b0 : regfile[srcA];
 assign valB_o = (srcB == 4'hF) ? 64'b0 : regfile[srcB];
+
+// writeback_stage
+
+always @(posedge clk_i) begin
+    
+end
 
 // 初始化寄存器文件
 initial 

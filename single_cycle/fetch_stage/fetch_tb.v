@@ -26,25 +26,19 @@ fetch fetch_module(
     .imem_error_o(imem_error_o)  
 );
 
+// 没有编写updatePC阶段，所以手动赋值PC_i
 initial 
 begin
     PC_i = 0;
     #10 PC_i = 10;
     #10 PC_i = 20;
     #10 PC_i = 22;
-    #10 PC_i = 32;
-    #10 PC_i = 42;
-    #10 PC_i = 44;
-    #10 PC_i = 46;
-    #10 PC_i = 55;
-    #10 PC_i = 64;
-    #10 PC_i = 65;
-    #10 PC_i = 66;
-    #10 PC_i = 265;
-    #10 PC_i = 1024;
+    #10 PC_i = 24;
+    $stop
 end
 
 initial
     $monitor("PC=%d\t, icode=%h\t, ifunc=%h\t, rA=%h\t, rB=%h\t, valC=%h\t, valP=%d\t, instr_valid=%h\t,imem_error=%h\t",
         PC_i, icode_o, ifunc_o, rA_o, rB_o, valC_o, valP_o, instr_valid_o, imem_error_o);
 endmodule
+

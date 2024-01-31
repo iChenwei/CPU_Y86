@@ -3,7 +3,7 @@
 `include "fetch.v"
 `include "decode.v"
 
-module decode_tb;
+module decode_tb();
 
 // fetch_stage
 reg [63:0] PC_i;
@@ -55,16 +55,7 @@ begin
     #10 PC_i = 10;
     #10 PC_i = 20;
     #10 PC_i = 22;
-    #10 PC_i = 32;
-    #10 PC_i = 42;
-    #10 PC_i = 44;
-    #10 PC_i = 46;
-    #10 PC_i = 55;
-    #10 PC_i = 64;
-    #10 PC_i = 65;
-    #10 PC_i = 66;
-    #10 PC_i = 265;
-    #10 PC_i = 1024;
+    $stop
 end
 
 initial

@@ -1,3 +1,4 @@
+`include "define.v"
 module execute (
     input wire clk_i,                 // 条件码寄存器CC，触发器实现的时钟
     input wire rst_n_i,               // 状态寄存器，信号0时成立的复位信号
@@ -11,7 +12,7 @@ module execute (
 
     output reg signed[63:0]  valE_o,  // 执行阶段的输出，ALU的计算结果
 
-    output wire Con_o                 //  执行阶段的输出，跳转判断
+    output wire Cnd_o                 //  执行阶段的输出，跳转判断
 );
 
 // 获取 ALU 的两个输入
@@ -51,17 +52,21 @@ always @(*) begin
 
         `IRET : begin
             aluA = 8;
+            aluB = valB_i;
         end
 
         `IPUSHQ : begin
             aluA = -8;
+            aluB = valB_i;
         end
 
         `IPOPQ : begin
             aluA = 8;
+            aluB = valB_i;
         end
         default : begin
             aluA = 0;
+            aluB = valB_i;
         end
     endcase
 end
@@ -73,14 +78,14 @@ always @(*) begin
         alu_fun = ifunc_i;
     end
     else begin
-        alu_fun = `ALUADD;
+        alu_fun = `ALUADD;  // 地址计算相关
     end
 end
 
 always @(*) begin
     case (alu_fun)
         `ALUADD : begin
-            valE_o = aluA + aluB;
+            valE_o = aluB + aluA;
         end
 
         `ALUSUB : begin
@@ -113,21 +118,27 @@ always @(*) begin
         new_cc[0] = (alu_fun == `ALUADD) ? 
                     (aluA[63] == aluB[63]) && (aluA[63] != valE_o[63]) :   // 输入同号 且 符号不同于结果
                     (alu_fun == `ALUSUB) ?
-                    (~aluA[63] == aluB[63]) && (aluA[63] != aluB[63]) : 0;  // 输入不同号 且 结果不同
+                    (~aluA[63] == aluB[63]) && (aluB[63] != valE_o[63]) : 0;  // 输入不同号 且 结果不同
     end
 end
 
+wire   set_cc;
 assign set_cc = (icode_i == `IOPQ) ? 1 : 0;
 
-reg [3:0] cc;
-always @(posedge clk_i) begin
-    if(~rst_n_i) 
-        cc <= 3'b100;    // zf sf of
-    else
+// 条件码寄存器
+reg [2:0] cc;       
+always @(posedge clk_i) begin   // 由于需要存储数据，所以用时序逻辑来实现
+    if(~rst_n_i)                // 复位
+        cc <= 3'b100;       
+    else if(set_cc)             // 设置
         cc <= new_cc;
 end
 
-assign Con_o = 
+wire zf, sf, of;
+assign zf = cc[2];
+assign sf = cc[1];
+assign of = cc[0];
+assign Cnd_o = 
     (ifunc_i == `C_YES) |
     (ifunc_i == `C_LE & ((sf ^ of) | zf)) |         // <= 
     (ifunc_i == `C_L  & (sf ^ of)) |                // <
@@ -138,11 +149,4 @@ assign Con_o =
 
 endmodule
 
-/*
-test bench：
-
-// 实现0-1跳变：
-initial  clk_i = 0;
-always #5 clk_i = ~clk_i;
-*/
 

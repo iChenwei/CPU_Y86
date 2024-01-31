@@ -13,8 +13,8 @@ module fetch (
     output wire        instr_valid_o,   // 指令是否有效
     output wire        imem_error_o     // 访存错误
 );
-    
-    reg [7:0] instr_mem[0:1023];    // 指令存储器 1024 * 8
+    // 等价 reg[7:0] instr_mem[1023:0] ，都表示[0~1023]，名称为instr_mem的数组
+    reg [7:0] instr_mem[0:1023];    // 指令存储器 1024 * 8 
 
     wire[79:0]  instr;              // 指令
     wire        need_regids;        // 指令中是否有寄存器字段
@@ -23,6 +23,8 @@ module fetch (
     // 取指令地址是否有效
     assign imem_error_o = (PC_i > 1023);
 
+
+    // 读取首条指令（方式少取，按照最长指令长度读取指令）
     // 逆序获取指令（立即数按照小端法存储，字节逆序方式，两次逆序可以获得正确的立即数）
     assign instr = {
         instr_mem[PC_i + 9], instr_mem[PC_i + 8], instr_mem[PC_i + 7],
@@ -31,7 +33,7 @@ module fetch (
         instr_mem[PC_i + 0]
     };
 
-    // 指令寄存器初始化
+    // 指令寄存器初始化（小端法存储，字节逆序）
     initial 
     begin
         // irmovq $0x8,  %r8
@@ -59,6 +61,17 @@ module fetch (
         instr_mem[17] = 8'h00;
         instr_mem[18] = 8'h00;
         instr_mem[19] = 8'h00;
+
+        // xorq  %rax, %rax
+        //  63_00
+        instr_mem[20] = 8'h63;
+        instr_mem[21] = 8'h00;
+        
+        // andq  %rsi, %rsi
+        // 62_66
+        instr_mem[22] = 8'h62;
+        instr_mem[23] = 8'h66;
+
     end
 
 
