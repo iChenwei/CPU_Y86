@@ -1,17 +1,19 @@
 `include "define.v"
+
+// 访存_阶段（大模块）
 module memory (
-    input wire         clk_i;   // 时钟信号，时序逻辑，用于内存“写”（“读”可以保留）
+    input wire         clk_i,   // 时钟信号，时序逻辑，用于内存“写”（“读”可以保留）
     
-    input wire  [ 3:0] icode_i;  // 实现读写控制      
+    input wire  [ 3:0] icode_i,  // 实现读写控制      
     
-    input wire  [63:0] valE_i;   // 地址信号，alu --> valE 
+    input wire  [63:0] valE_i,   // 地址信号，alu --> valE 
     
-    input wire  [63:0] valA_i;   // 写数据，write data --> memory
-    input wire  [63:0] valP_i;   // call、push等指令使用
+    input wire  [63:0] valA_i,   // 写数据，write data --> memory
+    input wire  [63:0] valP_i,   // call、push等指令使用
 
-    output wire [63:0] valM_o;   // 读出数据，read data from memory -> data
+    output wire [63:0] valM_o,   // 读出数据，read data from memory -> data
 
-    output wire  dmem_error_o;   // 访存错误信息提示（调试）
+    output wire  dmem_error_o   // 访存错误信息提示（调试）
 );
     
 reg r_en;               // 读使能信号
@@ -32,12 +34,10 @@ always @(*) begin
             w_en <= 1'b0;
         end
         
-        // 立即数 写入 内存
+        // 寄存器 写 寄存器
         `ICMOVQ : begin  
-            r_en      <=  1'b0;
-            w_en      <=  1'b1;
-            mem_addr  <=  valE_i;
-            mem_data  <=  valA_i;
+            r_en <=  1'b0;
+            w_en <=  1'b0;
         end
 
         // 寄存器 写入 内存
@@ -54,6 +54,7 @@ always @(*) begin
             w_en <= 1'b0;
         end
 
+        // 读内存
         `IMRMOVQ : begin
             r_en      <=  1'b1;
             w_en      <=  1'b0;
@@ -111,9 +112,10 @@ ram mem(
 endmodule
 
 
-// 内存模块
+// 内存模块（子模块）
 module ram(
-    input wire          clk_i,
+    input wire          clk_i,   // 时序逻辑
+
     input wire          r_en,
     input wire          w_en,
     input wire  [63:0]  addr_i,
@@ -128,11 +130,13 @@ reg [7:0] mem[0:1023];
 
 assign dmem_error_o = (addr_i > 1023) ? 1 : 0;
 
+// 读数据 -- 一次读取64位数据 / 8个字节数据
 assign rdata_o = (r_en == 1'b1) ? ({mem[addr_i + 7], mem[addr_i + 6],
                                     mem[addr_i + 5], mem[addr_i + 4],
                                     mem[addr_i + 3], mem[addr_i + 2],
                                     mem[addr_i + 1], mem[addr_i + 0]}) : 64'b0;
 
+// 写数据 -- 一次写入64位数据 / 8个字节数据
 always @(posedge clk_i) begin
     if(w_en) begin
         {mem[addr_i + 7], mem[addr_i + 6],
