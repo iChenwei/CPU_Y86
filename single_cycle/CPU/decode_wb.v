@@ -3,10 +3,9 @@
 module decode_wb (
 
     input wire          clk_i,       //  时钟信号
-    input wire          cnd,         //  状态码
     input wire  [ 3:0]  icode_i,     //  指令功能码
-    input wire  [63:0]  rA_i,        //  rA寄存器编号
-    input wire  [63:0]  rB_i,        //  rB寄存器编号
+    input wire  [ 3:0]  rA_i,        //  rA寄存器编号
+    input wire  [ 3:0]  rB_i,        //  rB寄存器编号
 
     input wire  [63:0]  valM_i,      //  从内存中读出的内容
     input wire  [63:0]  valE_i,      //  ALU计算结果
@@ -172,5 +171,23 @@ always @(posedge clk_i) begin
         end
     endcase
 end
-
+// 初始化寄存器文件
+initial 
+begin
+    regfile[0]  = 64'd0;      //  编号为0的寄存器中，存放的数据为0
+    regfile[1]  = 64'd1;    
+    regfile[2]  = 64'd2;    
+    regfile[3]  = 64'd3;    
+    regfile[4]  = 64'd4;    
+    regfile[5]  = 64'd5;    
+    regfile[6]  = 64'd6;    
+    regfile[7]  = 64'd7;    
+    regfile[8]  = 64'd8;    
+    regfile[9]  = 64'd9;    
+    regfile[10] = 64'd10;    
+    regfile[11] = 64'd11;    
+    regfile[12] = 64'd12;    
+    regfile[13] = 64'd13;    
+    regfile[14] = 64'd14;    
+end
 endmodule
