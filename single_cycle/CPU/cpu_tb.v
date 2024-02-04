@@ -8,6 +8,8 @@
 `include "writeback.v"
 `include "updatePC.v"
 
+// reg  激励信号
+// wire 待观察的信号
 module cpu_tb ();
 
 reg           clk;
