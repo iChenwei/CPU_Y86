@@ -1,3 +1,8 @@
+// timescale  时间单位/时间精度
+// 时间单位 - time_unit
+// 时间精度 - time_precision 
+// 时间单位和时间精度只能是 1、10、100 ； s、ms、us、ps和fs；时间精度必须小于或等于时间单位
+//  #10  ==> 10 * time_unit  
 `timescale 1ns/1ps
 
 `include "define.v"
@@ -111,6 +116,7 @@ updatePC updatePC_stage(
     .PC_o(npc)
 );
 
+// 数据初始化（只执行一次）
 initial begin
     clk   = 0;
     PC    = 0;
