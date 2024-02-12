@@ -22,7 +22,7 @@ initial begin
         // irmovq $0x0, %rax
         // 30_f0_00_00_00_00_00_00_00_00  
         // icode = 3     ifunc = 0
-        // rA    = 0      rB   = 0
+        // rA    = f      rB   = 0
         // valC  = 0     valP  = a
         // valA  = 0     valB  = 0
         // valE_exe = 0  valM_mem = 0
