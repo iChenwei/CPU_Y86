@@ -22,10 +22,10 @@ module fwd(
     output wire [63:0] fwdB_valB_o
 );
 
-assign fwdB_valB_o = ((d_srcB_i == e_dstE_i) ? e_valE_i :
-                      (d_srcB_i == M_dstM_i) ? m_valM_i : 
-                      (d_srcB_i == M_dstE_i) ? M_valE_i : 
-                      (d_srcB_i == W_dstM_i) ? W_valM_i : 
-                      (d_srcB_i == W_dstE_i) ? W_valE_i : d_rvalB_i);
+assign fwdB_valB_o = (d_srcB_i == e_dstE_i) ? e_valE_i :
+                     (d_srcB_i == M_dstM_i) ? m_valM_i :
+                     (d_srcB_i == M_dstE_i) ? M_valE_i : 
+                     (d_srcB_i == W_dstM_i) ? W_valM_i : 
+                     (d_srcB_i == W_dstE_i) ? W_valE_i : d_rvalB_i;
 
 endmodule
