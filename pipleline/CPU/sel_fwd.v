@@ -48,3 +48,9 @@ assign fwdA_valA_o = ((D_icode_i == `ICALL || D_icode_i == `IJXX) ? D_valP_i :
                       (d_srcA_i == W_dstM_i) ? W_valM_i :
                       (d_srcA_i == W_dstE_i) ? W_valE_i : d_rvalA_i);
 endmodule
+
+/*
+相关问题 ： 提前打草稿 && 语言精准 && 介绍问题的背景（让面试老师听明白问题）
+-- 准备简历（带有CPU）--PDF
+-- 准备复试问题
+*/

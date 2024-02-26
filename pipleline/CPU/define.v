@@ -24,13 +24,15 @@
 `define    FXORL        4'H3
 
 // stat
-// `define    SADR         
-// `define    SINS
-// `define    SHLT
-// `define    SAOK
+`define    SAOK         3'H1    // 正常
+`define    SHLT         3'H2    // 执行halt指令
+`define    SADR         3'H3    // 非法地址
+`define    SINS         3'H4    // 非法指令
+`define    SBUB         3'H5    // 写回阶段为bubble
 
 // decode_pipe
 `define    RRSP         4'H4
+
 // execute_pipe
 `define    ALUADD       4'H0
 `define    ALUSUB       4'H1
